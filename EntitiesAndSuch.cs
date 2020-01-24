@@ -51,6 +51,7 @@ namespace ConsoleThing
         public string NAME() { return name; }
         public int ATK() { return attack; }
         public int DEF() { return defend; }
+        public int AGI() { return speed; }
         public void LifeUp(int i) { life += i; }
         public bool isDead() { return life <= 0; }
     }
@@ -92,6 +93,7 @@ namespace ConsoleThing
         public string NAME() { return name; }
         public int ATK() { return attack; }
         public int DEF() { return defend; }
+        public int AGI() { return speed; }
         public void LifeUp(int i) { life += i; }
         public bool isDead() { return life <= 0; }
         public void AddMoney(int i) { money += i; }
@@ -158,6 +160,7 @@ namespace ConsoleThing
         public string NAME() { return name; }
         public int ATK() { return attack; }
         public int DEF() { return defend; }
+        public int AGI() { return speed; }
         public void LifeUp(int i) { life += i; }
         public bool isDead() { return life <= 0; }
     }
