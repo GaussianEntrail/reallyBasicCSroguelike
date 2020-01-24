@@ -248,15 +248,29 @@ namespace ConsoleThing
             string msg = "test";
             int attackerPower = (int)(P.ATK() * R.NextDouble());
             int defenderPower = (int)(Defender.DEF() * R.NextDouble());
-            if (attackerPower >= defenderPower)
+            int attackerSpeed = (int)(P.AGI() * R.NextDouble());
+            int defenderSpeed = (int)(Defender.AGI() * R.NextDouble());
+
+            if (attackerSpeed >= defenderSpeed)
             {
-                Defender.LifeUp(-1);
-                msg = P.NAME() + " attacked " + Defender.NAME() + "!";
+                if (attackerPower >= defenderPower)
+                {
+                    Defender.LifeUp(-1);
+                    if (!Defender.isDead())
+                    {
+                        msg = P.NAME() + " attacked " + Defender.NAME() + "!";
+                    }
+                    else
+                    {
+                        msg = P.NAME() + " killed " + Defender.NAME() + "!";
+                    }
+                }
+                else
+                {
+                    msg = Defender.NAME() + " blocked " + P.NAME() + "'s attack!"; 
+                }
             }
-            else
-            {
-                msg = Defender.NAME() + " blocked " + P.NAME() + "!";
-            }
+            else { msg = Defender.NAME() + " dodged" + P.NAME() + "'s attack!"; }
 
             messageLog.Add(msg);
         }
@@ -265,15 +279,29 @@ namespace ConsoleThing
             string msg = "test";
             int attackerPower = (int)(Attacker.ATK() * R.NextDouble());
             int defenderPower = (int)(P.DEF() * R.NextDouble());
-            if (attackerPower >= defenderPower)
+            int attackerSpeed = (int)(Attacker.AGI() * R.NextDouble());
+            int defenderSpeed = (int)(P.AGI() * R.NextDouble());
+
+            if (attackerSpeed >= defenderSpeed)
             {
-                P.LifeUp(-1);
-                msg = Attacker.NAME() + " attacked " + P.NAME() + "!";
+                if (attackerPower >= defenderPower)
+                {
+                    P.LifeUp(-1);
+                    if (!P.isDead())
+                    {
+                        msg = Attacker.NAME() + " attacked " + P.NAME() + "!";
+                    }
+                    else
+                    {
+                        msg = Attacker.NAME() + " killed " + P.NAME() + "!";
+                    }
+                }
+                else
+                {
+                    msg = P.NAME() + " blocked " + Attacker.NAME() + "'s attack!";
+                }
             }
-            else
-            {
-                msg = P.NAME() + " blocked " + Attacker.NAME() + "!";
-            }
+            else { msg = P.NAME() + " dodged" + Attacker.NAME() + "'s attack!"; }
 
             messageLog.Add(msg);
         }
