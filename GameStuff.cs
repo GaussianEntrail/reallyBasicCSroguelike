@@ -123,23 +123,17 @@ namespace ConsoleThing
             T.tick();
             collectItems();
             removeDeadMonsters();
-            if (P.isDead()) { isRunning = false; }
-
-            draw();
             while (!P.isReady())
             {
                 P.doTick();
                 foreach (Monster mon in monsters)
                 {
                     mon.doTick();
-                    if (mon.isReady())
-                    {
-                        int dx = R.Next(3) - 1;
-                        int dy = R.Next(3) - 1;
-                        moveMonster(mon, dx, dy);
-                    }
+                    if (mon.isReady()) {MonsterPathFinding(mon);}
                 }
             }
+            if (P.isDead()) { isRunning = false; }
+            draw();
             commandKey = Console.ReadKey();
             command(commandKey);
         }
@@ -182,50 +176,43 @@ namespace ConsoleThing
         }
         public void movePlayer(int dx, int dy)
         {
+            if (dx == 0 && dy == 0) { return; }
             //CHECK NEW POSITION
             int new_x = P.getPosition().x + dx, new_y = P.getPosition().y + dy;
-            if (isCollision(new_x, new_y))
-            {
-                Monster targets = monsterAtPosition(new_x, new_y);
-                if (targets != null) { playerAttack(targets); P.doAction(); }
-            }
+            if (isCollision(new_x, new_y)) { return; }
             else
             {
-                //MOVE TO NEW POSITION
-                P.move(new_x, new_y);
-                P.doAction();
-                //MOVE THE CAMERA WITH THE PLAYER
-                C.move(P.getPosition().x - C.w / 2, P.getPosition().y - C.h / 2);
+                Monster targets = monsterAtPosition(new_x, new_y);
+                if (targets != null) { playerAttack(targets); P.doAction(); return; }
+                else
+                {
+                    //MOVE TO NEW POSITION
+                    P.move(new_x, new_y);
+                    P.doAction();
+                    //MOVE THE CAMERA WITH THE PLAYER
+                    C.move(P.getPosition().x - C.w / 2, P.getPosition().y - C.h / 2);
+                    messageLog.Add("Explorer moves");
+                    return;
+                }
             }
         }
         public void moveMonster(Monster mon, int dx, int dy)
         {
+            if (dx == 0 && dy == 0) { return; }
             //CHECK NEW POSITION
             int new_x = mon.getPosition().x + dx, new_y = mon.getPosition().y + dy;
-            if (isCollision(new_x, new_y, false))
-            {
-                if (P.isAt(new_x, new_y)) { monsterAttack(mon); mon.doAction(); }
-            }
+            if (P.isAt(new_x, new_y)) { monsterAttack(mon); mon.doAction(); return; }
+            else if ((monsterAtPosition(new_x, new_y) != null) || isCollision(new_x, new_y, false))
+            { return; }
             else
-            {
-                mon.move(new_x, new_y);
-                mon.doAction();
-            }
+            { mon.move(new_x, new_y); mon.doAction(); return; }
         }
         public bool isCollision(int x, int y, bool isPlayer = true)
         {
             //put something in here so monsters don't collide with other monsters?
             bool mapCollision = false;
-            bool monsterCollide = false;
-            bool playerCollide = false;
-            try
-            {
-                monsterCollide = (monsterAtPosition(x,y) != null);
-                mapCollision = M.isSolid(x, y);
-                playerCollide = P.isAt(x, y);
-            }
-            catch { }
-            return (mapCollision || (monsterCollide && isPlayer) || (playerCollide && !isPlayer) );
+            try {mapCollision = M.isSolid(x, y);} catch { }
+            return mapCollision;
         }
         private void collectItems()
         {
@@ -270,7 +257,7 @@ namespace ConsoleThing
                     msg = Defender.NAME() + " blocked " + P.NAME() + "'s attack!"; 
                 }
             }
-            else { msg = Defender.NAME() + " dodged" + P.NAME() + "'s attack!"; }
+            else { msg = Defender.NAME() + " dodged " + P.NAME() + "'s attack!"; }
 
             messageLog.Add(msg);
         }
@@ -301,7 +288,7 @@ namespace ConsoleThing
                     msg = P.NAME() + " blocked " + Attacker.NAME() + "'s attack!";
                 }
             }
-            else { msg = P.NAME() + " dodged" + Attacker.NAME() + "'s attack!"; }
+            else { msg = P.NAME() + " dodged " + Attacker.NAME() + "'s attack!"; }
 
             messageLog.Add(msg);
         }
@@ -325,24 +312,44 @@ namespace ConsoleThing
             catch { }
             return i;
         }
-        public Point[] getAdjacentFreeSpaces(int x, int y, bool isPlayer = false)
+        public List<Point> getAdjacentFreeSpaces(int x, int y, bool isPlayer = false)
         {
-            int i, j;
             List<Point> freePositions = new List<Point>();
-
-            for (i = -1; i < 2; i++)
+            for (int i = -1; i < 2; i++)
             {
-                for (j = -1; j < 2; j++)
+                for (int j = -1; j < 2; j++)
                 {
-                    if (i==0 && j==0) { continue; }
-                    if (isCollision(x + i, y + j, isPlayer)) { freePositions.Add(new Point(x + i, y + j)); }
+                    if (i==0 && j==0) {} 
+                    else if (!isCollision(x + i, y + j)) { freePositions.Add(new Point(x + i, y + j)); }
                 }
             }
-            return freePositions.ToArray();
+            return freePositions;
         }
-        public Monster[] getAdjacentMonsters(int x, int y)
+        private int squareDistance(int x1, int y1, int x2, int y2)
         {
-            return monsters.FindAll(m => Point.adjacent(m.getPosition(),x,y)).ToArray();
+            int dx = x2 - x1;
+            int dy = y2 - y1;
+
+            return (dx * dx) + (dy * dy);
+        }
+        private void MonsterPathFinding (Monster mon)
+        {
+            Point currentPos = mon.getPosition();
+            Point playerPos = P.getPosition();
+
+            int currentDistance = squareDistance(currentPos.x, currentPos.y, playerPos.x, playerPos.y);
+
+            int dx = R.Next(3) - 1;
+            int dy = R.Next(3) - 1;
+
+            
+            List<Point> listPoints = getAdjacentFreeSpaces(currentPos.x, currentPos.y).FindAll(i => !mon.wasAt(i.x, i.y) && (squareDistance(i.x, i.y, playerPos.x, playerPos.y) <= currentDistance) );
+            if (listPoints.Count() > 0) {
+                int choice = R.Next(listPoints.Count());
+                dx = listPoints[choice].x - currentPos.x;
+                dy = listPoints[choice].y - currentPos.y;
+            }
+            moveMonster(mon, dx, dy);
         }
     }
 }
