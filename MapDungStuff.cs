@@ -53,6 +53,7 @@ namespace ConsoleThing
         public static Tile VOID = new Tile(ConsoleColor.Black, ConsoleColor.Black, ' ', true);
         public static Tile ROCK = new Tile(ConsoleColor.DarkGray, ConsoleColor.Gray, '#', true);
         public static Tile SAND = new Tile(ConsoleColor.DarkYellow, ConsoleColor.Yellow, '.', false);
+        public static Tile FLOOR = new Tile(ConsoleColor.White, ConsoleColor.Gray, '.', false);
         public static Tile GRASS = new Tile(ConsoleColor.DarkGreen, ConsoleColor.Green, '\"', false);
         public static Tile TREE = new Tile(ConsoleColor.DarkGreen, ConsoleColor.Green, '♣', true);
         public static Tile WATER = new Tile(ConsoleColor.DarkBlue, ConsoleColor.Blue, '≈', true);
@@ -97,21 +98,7 @@ namespace ConsoleThing
         }
         public void mapCreate()
         {
-            int i, j;
-            double t;
-            for (j = 0; j < h; j++)
-            {
-                for (i = 0; i < w; i++)
-                {
-
-                        t = r.NextDouble();
-                        if (t < 0.5) { map[j, i] = Tile.GRASS; }
-                        if (t >= 0.5 && t < 0.7) { map[j, i] = Tile.TREE; }
-                        if (t >= 0.7 && t < 0.85) { map[j, i] = Tile.SAND; }
-                        if (t >= 0.85 && t < 0.99) { map[j, i] = Tile.WATER; }
-                        if (t >= 0.99) { map[j, i] = Tile.ROCK; }
-                }
-            }
+            map = MapGeneratorStuff.defaultMapGenerator(w, h, r);
         }
         public bool withinBounds(int x, int y)
         {
