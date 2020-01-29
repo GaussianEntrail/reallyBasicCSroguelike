@@ -17,12 +17,7 @@ namespace ConsoleThing
             {
                 for (i = 0; i < w; i++)
                 {
-                    t = r.NextDouble();
-                    if (t < 0.5) { map[j, i] = Tile.GRASS; }
-                    if (t >= 0.5 && t < 0.7) { map[j, i] = Tile.TREE; }
-                    if (t >= 0.7 && t < 0.85) { map[j, i] = Tile.SAND; }
-                    if (t >= 0.85 && t < 0.99) { map[j, i] = Tile.WATER; }
-                    if (t >= 0.99) { map[j, i] = Tile.ROCK; }
+                    map[ry, rx] = randomFloorTile(r, false);
                 }
             }
             return map;
@@ -42,8 +37,8 @@ namespace ConsoleThing
                 }
             }
 
-            int minRoomWidth = 3, maxRoomWidth = w / 3;
-            int minRoomHeight = 3, maxRoomHeight = h / 3;
+            int minRoomWidth = 3, maxRoomWidth = w / 4;
+            int minRoomHeight = 3, maxRoomHeight = h / 4;
             List<Rect> rooms = new List<Rect>();
             while (rooms.Count < maxRooms) {
                 int r_w = randomRange(r, minRoomWidth, maxRoomWidth);
