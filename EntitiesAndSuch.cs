@@ -62,7 +62,7 @@ namespace ConsoleThing
         Point p_prev;
         Tile t = Tile.PLAYER;
         int actiontimer;
-        int life, attack, defend, speed;
+        int life, attack, defend, speed, kills;
         string name;
         int money;
         public Player(int x, int y)
@@ -79,6 +79,7 @@ namespace ConsoleThing
         }
         public void CharInit()
         {
+            kills = 0;
             life = 4;
             attack = 10;
             defend = 10;
@@ -94,7 +95,6 @@ namespace ConsoleThing
         public void doTick() { actiontimer += speed; }
         public void doAction() { actiontimer -= 100; }
         public bool isReady() { return (actiontimer >= 100); }
-
         public string NAME() { return name; }
         public int ATK() { return attack; }
         public int DEF() { return defend; }
@@ -102,13 +102,14 @@ namespace ConsoleThing
         public void LifeUp(int i) { life += i; }
         public bool isDead() { return life <= 0; }
         public void AddMoney(int i) { money += i; }
+        public void scoresKill() { kills++; }
         public void statsWrite()
         {
             Console.BackgroundColor = ConsoleColor.Black;
             Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("X: {0}, Y: {1} ", p.x, p.y);
+            Console.WriteLine("{0}", name);
 
-            Console.ForegroundColor = ConsoleColor.Red;
+            Console.ForegroundColor = ConsoleColor.Magenta;
             Console.Write("♥ LIFE: {0}",life);
             Console.WriteLine();
 
@@ -127,6 +128,10 @@ namespace ConsoleThing
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.Write("₹ MONEY: {0}", money);
             Console.WriteLine();
+
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.Write("▼ KILLS: {0}", kills);
+            Console.WriteLine();
         }
     }
     class Monster : Critter
@@ -135,7 +140,7 @@ namespace ConsoleThing
         Point p_prev;
         Tile t = Tile.MONSTER;
         int actiontimer;
-        int life, attack, defend, speed;
+        int life, attack, defend, speed, kills;
         string name;
         public Monster(int x, int y)
         {
@@ -151,6 +156,7 @@ namespace ConsoleThing
         }
         public void CharInit()
         {
+            kills = 0;
             life = 3;
             attack = 8;
             defend = 8;
@@ -171,6 +177,7 @@ namespace ConsoleThing
         public int DEF() { return defend; }
         public int AGI() { return speed; }
         public void LifeUp(int i) { life += i; }
+        public void scoresKill() { kills++; }
         public bool isDead() { return life <= 0; }
     }
 }
