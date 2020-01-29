@@ -97,7 +97,7 @@ namespace ConsoleThing
                 {
                     for (rx = room.x; rx < room.x + room.w; rx++)
                     {
-                        map[ry, rx] = Tile.FLOOR;
+                        map[ry, rx] = randomFloorTile(r, false);
                     }
                 }
             }
@@ -108,7 +108,7 @@ namespace ConsoleThing
                 {
                     for (hx = hall.x; hx < hall.x + hall.w; hx++)
                     {
-                        map[hy, hx] = Tile.FLOOR;
+                        map[hy, hx] = randomFloorTile(r, true);
                     }
                 }
             }
@@ -128,7 +128,7 @@ namespace ConsoleThing
                             {
                                 if (x + i > 0 && x + i < w && y + j > 0 && y + j < h)
                                 {
-                                    if (map[y + j, x + i] == Tile.FLOOR) { adjFloorTile = true; break;}
+                                    if (map[y + j, x + i] != Tile.VOID && map[y + j, x + i] != Tile.ROCK) { adjFloorTile = true; break;}
                                 }
                             }
                         }
@@ -139,6 +139,18 @@ namespace ConsoleThing
 
             return map;
         }
+
+        public static Tile randomFloorTile(Random r, bool onlyPassable = false)
+        {
+            Tile t = Tile.FLOOR;
+            double randomTile = r.NextDouble();
+            if (randomTile < 0.6) { t = Tile.GRASS; }
+            if (randomTile >= 0.6 && randomTile < 0.65) { if (!onlyPassable) { t = Tile.TREE; } else { t = Tile.GRASS; } }
+            if (randomTile >= 0.65 && randomTile < 0.8) { t = Tile.SAND; }
+            if (randomTile >= 0.85) { if (!onlyPassable) { t = Tile.WATER; } else { t = Tile.GRASS; } }
+            return t;
+        }
+
 
         public static int randomRange(Random r, int min, int max)
         {
