@@ -31,8 +31,7 @@ namespace ConsoleThing
         public static Tile[,] testMapGenerator(int w, int h, Random r, int maxRooms)
         {
             Tile[,] map = new Tile[h, w];
-            int minRoomWidth = 3, maxRoomWidth = w / 3;
-            int minRoomHeight = 3, maxRoomHeight = h / 3;
+
 
             int x, y;
             for (y = 0; y < h; y++)
@@ -43,13 +42,22 @@ namespace ConsoleThing
                 }
             }
 
+            int minRoomWidth = 3, maxRoomWidth = w / 3;
+            int minRoomHeight = 3, maxRoomHeight = h / 3;
             List<Rect> rooms = new List<Rect>();
             while (rooms.Count < maxRooms) {
                 int r_w = randomRange(r, minRoomWidth, maxRoomWidth);
                 int r_h = randomRange(r, minRoomHeight, maxRoomHeight);
                 int r_x = randomRange(r, 1, (w - 1) - r_w);
                 int r_y = randomRange(r, 1, (h - 1) - r_h);
-                rooms.Add(new Rect(r_x, r_y, r_w, r_h));
+                Rect room_add = new Rect(r_x, r_y, r_w, r_h);
+
+                bool roomIntersect = false;
+                if (rooms.Count > 0)
+                {
+                    roomIntersect = (rooms.Find(check => check.rectIntersect(room_add)) != null);
+                }
+                if (!roomIntersect) { rooms.Add(room_add); }
             }
 
             List<Rect> halls = new List<Rect>();
