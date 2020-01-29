@@ -249,6 +249,7 @@ namespace ConsoleThing
                     }
                     else
                     {
+                        P.scoresKill();
                         msg = P.NAME() + " killed " + Defender.NAME() + "!";
                     }
                 }
@@ -280,6 +281,7 @@ namespace ConsoleThing
                     }
                     else
                     {
+                        Attacker.scoresKill();
                         msg = Attacker.NAME() + " killed " + P.NAME() + "!";
                     }
                 }
