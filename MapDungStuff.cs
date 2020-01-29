@@ -26,6 +26,7 @@ namespace ConsoleThing
         public Point TOPRIGHT() { return new Point(x + w, y); }
         public Point BOTTOMLEFT() { return new Point(x, y + h); }
         public Point BOTTOMRIGHT() { return new Point(x + w, y + h); }
+        public Point CENTER() { return new Point( (int)x+w/2, (int)y+h/2 ); }
     }
 
     class Tile
@@ -51,7 +52,7 @@ namespace ConsoleThing
         }
 
         public static Tile VOID = new Tile(ConsoleColor.Black, ConsoleColor.Black, ' ', true);
-        public static Tile ROCK = new Tile(ConsoleColor.DarkGray, ConsoleColor.Gray, '#', true);
+        public static Tile ROCK = new Tile(ConsoleColor.Gray, ConsoleColor.DarkGray, '#', true);
         public static Tile SAND = new Tile(ConsoleColor.DarkYellow, ConsoleColor.Yellow, '.', false);
         public static Tile FLOOR = new Tile(ConsoleColor.White, ConsoleColor.Gray, '.', false);
         public static Tile GRASS = new Tile(ConsoleColor.DarkGreen, ConsoleColor.Green, '\"', false);
@@ -98,7 +99,8 @@ namespace ConsoleThing
         }
         public void mapCreate()
         {
-            map = MapGeneratorStuff.defaultMapGenerator(w, h, r);
+            //map = MapGeneratorStuff.defaultMapGenerator(w, h, r);
+            map = MapGeneratorStuff.testMapGenerator(w, h, r, 12);
         }
         public bool withinBounds(int x, int y)
         {
