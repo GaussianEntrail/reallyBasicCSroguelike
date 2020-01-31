@@ -12,12 +12,11 @@ namespace ConsoleThing
         {
             Tile[,] map = new Tile[h,w];
             int i, j;
-            double t;
             for (j = 0; j < h; j++)
             {
                 for (i = 0; i < w; i++)
                 {
-                    map[ry, rx] = randomFloorTile(r, false);
+                    map[j, i] = randomFloorTile(r, false);
                 }
             }
             return map;
@@ -145,7 +144,6 @@ namespace ConsoleThing
             if (randomTile >= 0.85) { if (!onlyPassable) { t = Tile.WATER; } else { t = Tile.GRASS; } }
             return t;
         }
-
 
         public static int randomRange(Random r, int min, int max)
         {
