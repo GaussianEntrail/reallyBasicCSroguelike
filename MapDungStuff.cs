@@ -22,11 +22,22 @@ namespace ConsoleThing
         public int x, y, w, h;
         public Rect(int x, int y, int w, int h) { this.x = x; this.y = y; this.w = w; this.h = h; }
         public bool pointWithinRect(Point p) { return (p.x >= x && p.x < x + w && p.y >= y && p.y < y + h); }
+        public bool rectIntersect(Rect other)
+        {
+            Point l1 = TOPLEFT(), r1 = BOTTOMRIGHT();
+            Point l2 = other.TOPLEFT(), r2 = other.BOTTOMRIGHT();
+            
+            if (l1.x > r2.x || l2.x > r1.x) {return false;}
+            if (l1.y < r2.y || l2.y < r1.y) {return false;}
+
+            return true;
+
+        }
         public Point TOPLEFT() { return new Point(x, y); }
         public Point TOPRIGHT() { return new Point(x + w, y); }
         public Point BOTTOMLEFT() { return new Point(x, y + h); }
         public Point BOTTOMRIGHT() { return new Point(x + w, y + h); }
-        public Point CENTER() { return new Point( (int)x+w/2, (int)y+h/2 ); }
+        public Point CENTER() { return new Point( (int)x+(w/2), (int)y+(h/2) ); }
     }
 
     class Tile
@@ -100,7 +111,7 @@ namespace ConsoleThing
         public void mapCreate()
         {
             //map = MapGeneratorStuff.defaultMapGenerator(w, h, r);
-            map = MapGeneratorStuff.testMapGenerator(w, h, r, 12);
+            map = MapGeneratorStuff.testMapGenerator(w, h, r, 10);
         }
         public bool withinBounds(int x, int y)
         {
